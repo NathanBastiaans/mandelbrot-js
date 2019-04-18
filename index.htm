@@ -42,6 +42,7 @@
                 function drawMandelbrot()
                 {
                     // Get variables from inputs
+					// todo
 
                     // Start drawing
                     for (var x=0; x < mandelbrotCanvas.width; x++) {
@@ -81,7 +82,10 @@
                 
                 function mouseUpMandelbrot() {
                     dragging = firstDragRegistered = false;
-                    
+
+                    // Do some cool calculations for new position
+					// todo
+
                     console.log(
                         dragX,
                         dragY,
@@ -97,20 +101,22 @@
                 }
                 
                 function zoomIn() {
+					// todo add front-end handler
                     magnificationFactor += 100;
-                    
+
                     drawMandelbrot();
                 }
-                
+
                 function zoomOut() {
+                    // todo add front-end handler
                     magnificationFactor -= 100;
-                    
+
                     drawMandelbrot();
                 }
 
                 function reset()
                 {
-                
+                	// todo
                 }
 
                 function doesBelongToMandelbrotSet(x, y) {
