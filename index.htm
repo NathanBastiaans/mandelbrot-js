@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mandelbrot set</title>
+    </head>
+    <body>
+    
+        <style>
+            body {
+                background: #ddd
+            }
+        </style>
+    
+        <canvas id="mandelbrotCanvas"></canvas>
+    
+        <script>
+            (function() {
+                // Canvas
+                var mandelbrotCanvas = document.getElementById("mandelbrotCanvas");
+                mandelbrotCanvas.width  = 600;
+                mandelbrotCanvas.height = 600;
+            
+                // Context
+                var context = mandelbrotCanvas.getContext("2d");
+
+                // Drag and drop properties
+                var dragging = false;
+                var firstDragRegistered = false;
+                var dragX, initialDragX = 0;
+                var dragY, initialDragY = 0;
+
+                mandelbrotCanvas.addEventListener('mouseup',   mouseUpMandelbrot);
+                mandelbrotCanvas.addEventListener('mousedown', mouseDownMandelbrot);
+                mandelbrotCanvas.addEventListener('mousemove', moveMandelbrot);
+
+                // Defaults
+                var magnificationFactor = 200;
+                var panX                = 2;
+                var panY                 = 1.5;
+                var maxIterations       = 100;
+
+                function drawMandelbrot()
+                {
+                    // Get variables from inputs
+
+                    // Start drawing
+                    for (var x=0; x < mandelbrotCanvas.width; x++) {
+
+                        for (var y=0; y < mandelbrotCanvas.height; y++) {
+
+                            var belongs = doesBelongToMandelbrotSet(
+                                x / magnificationFactor - panX,
+                                y / magnificationFactor - panY
+                            );
+
+                            if (belongs === false) {
+                                context.fillStyle = '#000';
+                                context.fillRect(x, y, 1, 1); // Draw a black pixel
+                            } else {
+                                context.fillStyle = 'hsl(0, 100%, ' + belongs + '%)';
+                                context.fillRect(x, y, 1, 1); // Draw a colorful pixel
+                            }
+                        }
+                    }
+                }
+
+                // Capture original coordinates of target and touch
+                function moveMandelbrot(e) {
+                    if (dragging) {
+                        if (firstDragRegistered) {
+                            dragX = e.clientX;
+                            dragY = e.clientY;
+                        } else {
+                            initialDragX = e.clientX;
+                            initialDragY = e.clientY;
+                            
+                            firstDragRegistered = true;
+                        }
+                    }
+                }
+                
+                function mouseUpMandelbrot() {
+                    dragging = firstDragRegistered = false;
+                    
+                    console.log(
+                        dragX,
+                        dragY,
+                        initialDragX,
+                        initialDragY
+                    );
+                    
+                    drawMandelbrot();
+                }
+                
+                function mouseDownMandelbrot() {
+                    dragging = true;
+                }
+                
+                function zoomIn() {
+                    magnificationFactor += 100;
+                    
+                    drawMandelbrot();
+                }
+                
+                function zoomOut() {
+                    magnificationFactor -= 100;
+                    
+                    drawMandelbrot();
+                }
+
+                function reset()
+                {
+                
+                }
+
+                function doesBelongToMandelbrotSet(x, y) {
+                    var realComponentOfResult      = x;
+                    var imaginaryComponentOfResult = y;
+                    
+                    for(var i = 0; i < maxIterations; i++) {
+                        var tempRealComponent = realComponentOfResult * realComponentOfResult - imaginaryComponentOfResult * imaginaryComponentOfResult + x;
+                        var tempImaginaryComponent = 2 * realComponentOfResult * imaginaryComponentOfResult + y;
+                        
+                        realComponentOfResult      = tempRealComponent;
+                        imaginaryComponentOfResult = tempImaginaryComponent;
+
+                        if(realComponentOfResult * imaginaryComponentOfResult > 5) {
+                            return (i/maxIterations * 100);
+                        }
+                    }
+                    
+                    return false;
+                }
+                
+                drawMandelbrot();
+            })();
+        </script>
+    </body>
+</html>
