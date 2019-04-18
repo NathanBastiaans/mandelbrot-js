@@ -10,16 +10,27 @@
                 background: #ddd
             }
         </style>
-    
+
+        <div>
+            <button id="mandelbrotZoomIn">Zoom in</button>
+            <button id="mandelbrotZoomOut">Zoom out</button>
+            <button id="mandelbrotReset">Reset</button>
+        </div>
+
         <canvas id="mandelbrotCanvas"></canvas>
-    
+
         <script>
             (function() {
                 // Canvas
                 var mandelbrotCanvas = document.getElementById("mandelbrotCanvas");
                 mandelbrotCanvas.width  = 600;
                 mandelbrotCanvas.height = 600;
-            
+
+                // Buttons
+                var mandelbrotZoomInButton  = document.getElementById("mandelbrotZoomIn");
+                var mandelbrotZoomOutButton = document.getElementById("mandelbrotZoomOut");
+                var mandelbrotResetButton   = document.getElementById("mandelbrotReset");
+
                 // Context
                 var context = mandelbrotCanvas.getContext("2d");
 
@@ -29,14 +40,20 @@
                 var dragX, initialDragX = 0;
                 var dragY, initialDragY = 0;
 
+                // Drag and drop events
                 mandelbrotCanvas.addEventListener('mouseup',   mouseUpMandelbrot);
                 mandelbrotCanvas.addEventListener('mousedown', mouseDownMandelbrot);
                 mandelbrotCanvas.addEventListener('mousemove', moveMandelbrot);
 
+                // Other events
+                mandelbrotZoomInButton.addEventListener('click',  zoomIn);
+                mandelbrotZoomOutButton.addEventListener('click', zoomOut);
+                mandelbrotResetButton.addEventListener('click',   reset);
+
                 // Defaults
                 var magnificationFactor = 200;
                 var panX                = 2;
-                var panY                 = 1.5;
+                var panY                = 1.5;
                 var maxIterations       = 100;
 
                 function drawMandelbrot()
@@ -101,22 +118,26 @@
                 }
                 
                 function zoomIn() {
-					// todo add front-end handler
-                    magnificationFactor += 100;
+                    magnificationFactor += 10;
 
                     drawMandelbrot();
                 }
 
                 function zoomOut() {
-                    // todo add front-end handler
-                    magnificationFactor -= 100;
+                    magnificationFactor -= 10;
 
                     drawMandelbrot();
                 }
 
                 function reset()
                 {
-                	// todo
+                    // Reset to default values
+                    magnificationFactor = 200;
+                    panX                = 2;
+                    panY                = 1.5;
+                    maxIterations       = 100;
+
+                    drawMandelbrot();
                 }
 
                 function doesBelongToMandelbrotSet(x, y) {
