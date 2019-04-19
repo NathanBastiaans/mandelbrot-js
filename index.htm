@@ -15,6 +15,11 @@
             <button id="mandelbrotZoomIn">Zoom in</button>
             <button id="mandelbrotZoomOut">Zoom out</button>
             <button id="mandelbrotReset">Reset</button>
+            |
+            <button id="mandelbrotMoveUp">Up</button>
+            <button id="mandelbrotMoveDown">Down</button>
+            <button id="mandelbrotMoveLeft">Left</button>
+            <button id="mandelbrotMoveRight">Right</button>
         </div>
 
         <canvas id="mandelbrotCanvas"></canvas>
@@ -30,6 +35,11 @@
                 var mandelbrotZoomInButton  = document.getElementById("mandelbrotZoomIn");
                 var mandelbrotZoomOutButton = document.getElementById("mandelbrotZoomOut");
                 var mandelbrotResetButton   = document.getElementById("mandelbrotReset");
+
+                var mandelbrotMoveUp    = document.getElementById("mandelbrotMoveUp");
+                var mandelbrotMoveDown  = document.getElementById("mandelbrotMoveDown");
+                var mandelbrotMoveLeft  = document.getElementById("mandelbrotMoveLeft");
+                var mandelbrotMoveRight = document.getElementById("mandelbrotMoveRight");
 
                 // Context
                 var context = mandelbrotCanvas.getContext("2d");
@@ -50,21 +60,26 @@
                 mandelbrotZoomOutButton.addEventListener('click', zoomOut);
                 mandelbrotResetButton.addEventListener('click',   reset);
 
+                mandelbrotMoveUp.addEventListener('click',    moveMandelbrotUp);
+                mandelbrotMoveDown.addEventListener('click',  moveMandelbrotDown);
+                mandelbrotMoveLeft.addEventListener('click',  moveMandelbrotLeft);
+                mandelbrotMoveRight.addEventListener('click', moveMandelbrotRight);
+
                 // Defaults
                 var magnificationFactor = 200;
                 var panX                = 2;
                 var panY                = 1.5;
-                var maxIterations       = 100;
+                var maxIterations       = 250;
 
                 function drawMandelbrot()
                 {
                     // Get variables from inputs
-					// todo
+                    // todo
 
                     // Start drawing
                     for (var x=0; x < mandelbrotCanvas.width; x++) {
 
-                        for (var y=0; y < mandelbrotCanvas.height; y++) {
+                        for (var y = 0; y < mandelbrotCanvas.height; y++) {
 
                             var belongs = doesBelongToMandelbrotSet(
                                 x / magnificationFactor - panX,
@@ -83,7 +98,8 @@
                 }
 
                 // Capture original coordinates of target and touch
-                function moveMandelbrot(e) {
+                function moveMandelbrot(e)
+                {
                     if (dragging) {
                         if (firstDragRegistered) {
                             dragX = e.clientX;
@@ -91,13 +107,38 @@
                         } else {
                             initialDragX = e.clientX;
                             initialDragY = e.clientY;
-                            
+
                             firstDragRegistered = true;
                         }
                     }
                 }
-                
-                function mouseUpMandelbrot() {
+
+                function moveMandelbrotUp() {
+                    panY += calculateButtonMovementFactor();
+                    drawMandelbrot();
+                }
+
+                function moveMandelbrotDown() {
+                    panY -= calculateButtonMovementFactor();
+                    drawMandelbrot();
+                }
+
+                function moveMandelbrotLeft() {
+                    panX += calculateButtonMovementFactor();
+                    drawMandelbrot();
+                }
+
+                function moveMandelbrotRight() {
+                    panX -= calculateButtonMovementFactor();
+                    drawMandelbrot();
+                }
+
+                function calculateButtonMovementFactor() {
+                    return 200 / magnificationFactor;
+                }
+
+                function mouseUpMandelbrot()
+                {
                     dragging = firstDragRegistered = false;
 
                     // Do some cool calculations for new position
@@ -113,18 +154,21 @@
                     drawMandelbrot();
                 }
                 
-                function mouseDownMandelbrot() {
+                function mouseDownMandelbrot()
+                {
                     dragging = true;
                 }
                 
-                function zoomIn() {
-                    magnificationFactor += 10;
+                function zoomIn()
+                {
+                    magnificationFactor += 150;
 
                     drawMandelbrot();
                 }
 
-                function zoomOut() {
-                    magnificationFactor -= 10;
+                function zoomOut()
+                {
+                    magnificationFactor -= 150;
 
                     drawMandelbrot();
                 }
@@ -140,7 +184,8 @@
                     drawMandelbrot();
                 }
 
-                function doesBelongToMandelbrotSet(x, y) {
+                function doesBelongToMandelbrotSet(x, y)
+                {
                     var realComponentOfResult      = x;
                     var imaginaryComponentOfResult = y;
                     
